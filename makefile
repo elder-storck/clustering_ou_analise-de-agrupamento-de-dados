@@ -1,12 +1,14 @@
-PROJ_NAME = Compacta
-CC_FLAGS=-c -w -Wall
+PROJ_NAME = trab1
+CC_FLAGS=-c -w -Wall -lm
 
-$(PROJ_NAME): obj/main.o
-	gcc -o $(PROJ_NAME) obj/main.o
+$(PROJ_NAME): obj/main.o obj/methodFile.o
+	gcc -o $(PROJ_NAME) obj/main.o obj/methodFile.o -lm
 
 obj/main.o: implementation/main.c
 	gcc -o obj/main.o implementation/main.c $(CC_FLAGS)
 
+obj/methodFile.o: implementation/methodFile.c
+	gcc -o obj/methodFile.o implementation/methodFile.c $(CC_FLAGS)
 
 
 clean:

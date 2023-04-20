@@ -1,131 +1,60 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<math.h>
+#include"methodFile.h"
 
-int QuantLinha(FILE *arq);
-int QuantColuna(FILE *arq);
-void inputArquivo(char *inputArq);
+float* Calculate_Distance(char **vector, int amountLine, int amountToken);
 
 int main(int argc, char *argv[]){
-    char* inputArq = argv[1];   //arquivo entrada
+    char* inputFile = argv[1];   //arquivo entrada
     int k = atoi(argv[2]);      //tamanho de K
-    char* outputArq = argv[3];  //arquivo saída
-    
-
-    inputArquivo(inputArq);
-    
-    if(argc != 4) printf("Entrada Inválida!!\n");
-
-//    if(argv[0])
-return 0;
-}
-void inputArquivo(char *inputArq){
-    FILE *arq;
-    char *token;
-    int amountLine=0, amountToken =0;
+    char* outputFile = argv[3];  //arquivo saída
     
     /*Abre o arquivo e testa*/
-    arq = fopen(inputArq, "r");
-    if(arq == NULL){
-        printf("\n FUDEOOO -Arquivo FUdidu\n");
-        return;
-    }
-    amountLine  = QuantLinha(arq);
-    amountToken = QuantColuna(arq);
+    FILE *arq = Open_File(inputFile);
+
+    /*Conta quantidade de linhas e colunas em um Arquivo*/
+    int amountLine  = Amount_Line(arq);
+    int amountToken = Amount_Token(arq);
     printf("%d %d\n",amountLine, amountToken);
-    
-    char tag[amountLine][100];
-    float vetor[amountLine][amountToken];
-
-    //getline(linha, ,)
     rewind(arq);
 
-    char *line = NULL;
-    size_t len =0;
-    //getline(&line, &len,arq);
-    //printf("%s \n",line);
+    
 
-    int countAuxLine =0;
-    int countAuxcoluna =0;
-    const char s[2] = ",";
-
-    while((getline(&line, &len, arq)) != -1){
-        printf("%s",line);
-        token = strtok(line,s);
-        /*for(int i=0; i<(amountLine-1); i++){
-            token = strtok(line,",");
-            printf("%s  ",token);
-        }*/
-
-        //token = fscanf()
-        //token = strtok(line,"\n");
-        printf("%s  ",token);
-
-        countAuxLine++;
-        //printf("\n%s\n",token);    
+    /*Motar vetor com os pontos e suas coordenadas*/
+    char** vector = Mount_Vector(arq, amountLine, amountToken);
+    
+    /*Calcular distância*/
+    float* distance = Calculate_Distance(vector,amountLine,amountToken);
+    for(int i=0; i<51; i++){
+        printf("%.3f\n",distance[i]);
     }
-
-/*
-    char *
-    token = strtok(arq,",");
-    while(!feof(arq)){
-        line = fgets(line,1000,arq);
-        token = strtok()
-    }
-
-
-
-
-    for(int i=0; i<amountLine; i++){
-        //fgets(line, 1000, arq);
-        //printf("%s\n",line);
-        for(int j=0; j<(amountToken-1); j++){
-            //printf("%d ",j);
-            fscanf(arq, "%s[^,]",token);
-            printf("%s\n",token);
-        }
-
-    }
-
-
-
-*/
-
-//    le_Linha(arq);
-        //printf("%d\n",countLinha);
-
-    //fseek(arq, 0, SEEK_SET);
-
-    //float vetor[countLinha][countColunas];
-
+    
+    Free_Vector(vector, amountLine, amountToken);
+    free(distance);
     fclose(arq);
-}
-int QuantColuna(FILE *arq){
-    char linha[1000];
-    char *token;
-    /*Lê a Primeira Linha*/
-    fgets(linha, 1000,arq);
-    
-    /*Contando quantidade de tokens em uma linha*/
-    int countColunas = 0;
-    token = strtok(linha,",");
-    while(token){
-        countColunas++;
-        token = strtok(NULL,",");
-    }
-    rewind(arq);
-    //fseek(arq, 0, SEEK_SET);
-    return countColunas;
+
+return 0;
+
 }
 
-int QuantLinha(FILE *arq){
-    /*Contando quantidade de Linhas*/
-    int countLinha = 0;
-    char c;
-    for (c = getc(arq); c != EOF; c = getc(arq)){
-        if (c == '\n')  countLinha++;
+float* Calculate_Distance(char **vector, int amountLine, int amountToken){
+    float* distance =  malloc(((amountLine+1)*(amountLine/2)) * sizeof(float));    //**************diminuir tamanho 
+    long double soma =0.0;
+    int count=0;
+
+    for(int i=0; i<(amountLine*amountToken); i= i+amountToken){     //Pula de Ponto em Ponto 
+        //printf("i: %s\n",vector[i]);
+        for(int j=i+amountToken; j<(amountLine*amountToken); j= j+amountToken){ //Pula de ponto em ponto, começa um ponto após o ponto que o i aponta
+            for(int c=1; c< amountToken; c++){                                  //anda através das coordenadas do vetor
+                soma = soma + (long double)pow((atof(vector[j+c]) - atof(vector[i+c])), 2);     //Claculo parcial distancia (x2-x1)² + (y2-y1)²
+            }
+            distance[count] = sqrt(soma);       //caculo da distancia
+            soma =0;
+            count++;
+            //printf("%d\n",count);
+        }
     }
-    //fseek(arq, 0, SEEK_SET);
-    rewind(arq);
-    return countLinha;
+    return distance;
 }
