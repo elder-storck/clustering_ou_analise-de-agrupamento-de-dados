@@ -3,8 +3,22 @@
 #include<string.h>
 #include<math.h>
 #include"methodFile.h"
+#include"methodDistance.h"
 
-float* Calculate_Distance(char **vector, int amountLine, int amountToken);
+typedef struct aresta Aresta;
+char* Aloca_Nome(char *name);
+Aresta* Calculate_Distance(char **vector, int amountLine, int amountToken, int size);
+int comparar_Distancia(const void *x, const void *y);
+void Free_Arestas(Aresta *arestas, int size);
+
+
+
+
+struct aresta{
+    char* ID1;
+    char* ID2;
+    float distance;
+};
 
 int main(int argc, char *argv[]){
     char* inputFile = argv[1];   //arquivo entrada
@@ -25,36 +39,102 @@ int main(int argc, char *argv[]){
     /*Motar vetor com os pontos e suas coordenadas*/
     char** vector = Mount_Vector(arq, amountLine, amountToken);
     
-    /*Calcular distância*/
-    float* distance = Calculate_Distance(vector,amountLine,amountToken);
-    for(int i=0; i<51; i++){
-        printf("%.3f\n",distance[i]);
-    }
+    /*Montar vetor com as distância*/
+    int size_arestas =0;
+    for(int i=0; i<amountLine; i++) size_arestas += i;
+    Aresta* arestas = Calculate_Distance(vector, amountLine, amountToken, size_arestas);
     
+    
+    
+
+    printf("tam: %d\n",size_arestas);
+
+
+    
+    //for(int j=0; j < size_arestas; j++){
+    //    printf("[%d]: %s %s %f\n",j,arestas[j].ID1, arestas[j].ID2, arestas[j].distance);
+    //}
+
+    /*ordenar o Vetor com as distâncias*/
+    qsort(arestas,(size_t)size_arestas,sizeof(struct aresta), comparar_Distancia);
+
+    for(int i=0; i<size_arestas; i++){
+        printf("%f\n",arestas[i].distance);
+        //printf("%s %s %f\n",arestas[i].ID1, arestas[i].ID2, arestas[i].distance);
+    }
+
+
     Free_Vector(vector, amountLine, amountToken);
-    free(distance);
+    Free_Arestas(arestas, size_arestas);
     fclose(arq);
 
 return 0;
 
 }
 
-float* Calculate_Distance(char **vector, int amountLine, int amountToken){
-    float* distance =  malloc(((amountLine+1)*(amountLine/2)) * sizeof(float));    //**************diminuir tamanho 
-    long double soma =0.0;
-    int count=0;
 
-    for(int i=0; i<(amountLine*amountToken); i= i+amountToken){     //Pula de Ponto em Ponto 
-        //printf("i: %s\n",vector[i]);
-        for(int j=i+amountToken; j<(amountLine*amountToken); j= j+amountToken){ //Pula de ponto em ponto, começa um ponto após o ponto que o i aponta
-            for(int c=1; c< amountToken; c++){                                  //anda através das coordenadas do vetor
-                soma = soma + (long double)pow((atof(vector[j+c]) - atof(vector[i+c])), 2);     //Claculo parcial distancia (x2-x1)² + (y2-y1)²
+
+
+
+int comparar_Distancia(const void *x, const void *y){
+    if(((Aresta*)x)->distance > ((Aresta*)y)->distance){
+        return 1;
+    }
+    if(((Aresta*)x)->distance < ((Aresta*)y)->distance){
+        return -1;
+    }
+    return 0;
+}
+
+
+
+
+
+char* Aloca_Nome(char *name){
+    char* Name = malloc((sizeof(char) * strlen(name)) +1);
+    strcpy(Name, name);
+    return Name;
+}
+
+
+
+Aresta* Calculate_Distance(char **vector, int amountLine, int amountToken, int size){
+    /*Declarando vetor de arestas*/
+    Aresta* arestas = malloc(size * sizeof(Aresta));
+
+    long double soma =0.0;  //recebe as distancia 
+    int  count  =0;         //marca a posição do vetor de aresta
+
+    /*Achando Dois POntos Para Calcular Distancia*/
+    /*for percorendo o  vetor de pontos, pulando de ID para ID*/
+    for(int i=0; i<(amountLine*amountToken); i= i+amountToken){
+        /*for percorrendo vetor de pontos, pulando de ID para ID, começa um ponto após o for anterior*/                 
+        for(int j=i+amountToken; j<(amountLine*amountToken); j= j+amountToken){ 
+            /*Copia Identificadores dos dois pontos para vetor arestas*/
+            arestas[count].ID1 = Aloca_Nome(vector[i]);                         
+            arestas[count].ID2 = Aloca_Nome(vector[j]);
+            
+            /*Fazendo Calculo parcial da distancia dos pontos -> soma = (x2-x1)² + (y2-y1)²  */
+            /*for percore vetor de pontos, apontando somante para as posições das coordenadas*/
+            for(int c=1; c< amountToken; c++){
+                soma = soma + (long double)pow((atof(vector[j+c]) - atof(vector[i+c])), 2);
             }
-            distance[count] = sqrt(soma);       //caculo da distancia
+            
+            /*Resultado do Calculo parcial da distancia dos pontos -> soma = reaiz{(x2-x1)² + (y2-y1)²}  */
+            arestas[count].distance = (float)sqrt(soma);
+
+            /*Incrementando contador e zerando a soma*/
             soma =0;
             count++;
-            //printf("%d\n",count);
         }
     }
-    return distance;
+    return arestas;
+}
+void Free_Arestas(Aresta *arestas, int size){
+    for(int i=0; i<size; i++){
+        free(arestas[i].ID1);
+        free(arestas[i].ID2);
+    }
+    free(arestas);
+    return;
 }

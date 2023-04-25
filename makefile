@@ -20,4 +20,4 @@ rmpromper: clean
 	rm -rf $(PROJ_NAME)
 
 run:
-	./$(PROJ_NAME) ./in-exemplos/1.txt 3 saida
+	valgrind ./$(PROJ_NAME) ./in-exemplos/1.txt 3 saida

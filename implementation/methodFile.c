@@ -18,11 +18,11 @@ FILE* Open_File(char *nameFile){
 
 
 int Amount_Token(FILE *file){
-    char linha[10000];
+    char linha[500];
     char *token;
     
     /*Lê a Primeira Linha*/
-    fgets(linha, 1000,file);
+    fgets(linha, 500,file);
     
     /*Contando quantidade de tokens em uma linha*/
     int countColunas = 0;
