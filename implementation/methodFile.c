@@ -68,7 +68,9 @@ void Display_Vector(char **vector, int amountLine, int amountToken){
     return;
 }
 void Free_Vector(char **vector, int amountLine, int amountToken){
-    for(int i=0; i<(amountLine*amountToken); i++) free(vector[i]);
+    
+    for(int i=0; i<(amountLine*amountToken); i++)    free(vector[i]);
+     
     free(vector);        
     return;
 }
@@ -80,8 +82,9 @@ char** Mount_Vector(FILE *file, int amountLine, int amountToken){
     char** vector = (char**) malloc(sizeof(char*) * amountLine * amountToken);
 
     char *token;        //recebe dados entre linhas
-    char *line = NULL;  //recebe todos os dados de uma linha
-    size_t len =0;      //auxiliar
+    char *line = malloc(1000*sizeof(char));  //recebe todos os dados de uma linha
+    //char *teste = line;
+    size_t len =1000;      //auxiliar
 
     int countAux =0;
 
@@ -108,6 +111,7 @@ char** Mount_Vector(FILE *file, int amountLine, int amountToken){
 
     countAux++;
     }
+    free(line);
 return vector;
 }
 
