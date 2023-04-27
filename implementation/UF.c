@@ -1,42 +1,67 @@
 #include "UF.h"
+#include "methodDistance.h"
 
+struct node{
+    /* data */
+    int     id;
+    int     sz;
+};
+
+void UF_display(Node *nodes, int size){
+    for(int i=0; i<size; i++){
+        printf("Pai: %d, Peso:%d\n",nodes[i].id, nodes[i].sz);
+    }
+    return;
+}
 
 /*inicia Cada objeto começa na sua propria componente*/
-int* UF_init(int *sz, int size){
+Node* UF_init(int amountPontos){
     /*estrutura arvore*/
-    int *arv = malloc(sizeof(int)*size);
-    for (int i=0; i<size; i++){
-        sz[i]  = 1;
-        arv[i] = i;  
+    Node *nodes = malloc(amountPontos * sizeof(Node));
+    
+    //int *arv = malloc(sizeof(int)*size);
+    for (int i=0; i<amountPontos; i++){
+        //printf("%s\n",vector[i*amountToken]);
+        //nodes[i].name = malloc((strlen(vector[i * amountToken]) *sizeof(char)) +1);
+        //strcpy(nodes[i].name, vector[i * amountToken]);
+        nodes[i].id = i;
+        nodes[i].sz = 1;
     }
-    return arv;
+    return nodes;
 }
 
 /*Faz união de duas árvores, pendura a árv. menor sob a maior*/
-void UF_union(int *id, int *sz, int p, int q) {
-    int i = UF_find(id, p); 
-    int j = UF_find(id, q); // Profundidade de ? acessos.
+void UF_union(Node *node, int p, int q) {
+    int i = UF_find(node, p); 
+    int j = UF_find(node, q); // Profundidade de ? acessos.
     if (i == j) return;
-        if (sz[i] < sz[j]) { id[i] = j; sz[j] += sz[i]; }
-    else { id[j] = i; sz[i] += sz[j]; }
+    
+    if (node[i].sz < node[j].sz){
+        node[i].id = j;
+        node[j].sz += node[i].sz;
+    }else{
+        node[j].id = i;
+        node[i].sz += node[j].sz;
+        }
+    return;
 }
 
 /*Buscar o pai até a raiz*/
-int UF_find(int *id, int i) {
-    while (i != id[i]) {
-        id[i] = id[id[i]]; // Uma unica linha de codigo adicional.
-        i = id[i]; // Cada passo agora requer 5 acessos.
+int UF_find(Node *node, int i) {
+    while (i != node[i].id) {
+        node[i].id = node[node[i].id].id; // Uma unica linha de codigo adicional.
+        i = node[i].id;                   // Cada passo agora requer 5 acessos.
     }
     return i;
 }
 
-bool UF_connected(int *id, int p, int q){
-    return UF_find(id, p) == UF_find(id, q);
+bool UF_connected(Node *node, int p, int q){
+    return UF_find(node, p) == UF_find(node, q);
 }
 
 
-void UF_free(int *id){
-    free(id);
+void UF_free(Node *node){
+    free(node);
     return;    
 }
 

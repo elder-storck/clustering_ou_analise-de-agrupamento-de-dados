@@ -5,6 +5,7 @@
 #include"methodFile.h"
 #include"methodDistance.h"
 #include"UF.h"
+#include"Point.h"
 
 
 
@@ -18,30 +19,31 @@ int main(int argc, char *argv[]){
     char* outputFile = argv[3];
     
     /*Abre o arquivo e testa*/
-    FILE *arq = Open_File(inputFile);
+    FILE *arq = Point_open_file(inputFile);
 
     /*Conta quantidade de linhas do Arquivo*/
-    int amountLine  = Amount_Line(arq);
+    int amountLine  = Point_amount_line(arq);
     /*Conta quantidade de colunas do Arquivo*/
-    int amountToken = Amount_Token(arq);
+    int amountToken = Point_amount_token(arq);
     rewind(arq);
-    //printf("%d %d\n",amountLine, amountToken);
     
-    /*Vetor com os pontos e suas coordenadas*/
-    char** vector = Mount_Vector(arq, amountLine, amountToken);
-    
-    /*Quantidade de Arestas*/
-    int size_arestas =0;
-    for(int i=0; i<amountLine; i++) size_arestas += i;
-    
-    /*Vetor arestas (ID1, ID2, tamanho aresta)*/
-    Aresta* arestas = Calculate_Distance(vector, amountLine, amountToken, size_arestas);
-    
+    /*Vetor com pontos*/
+    Ponto *pontos = Point_le_file(arq, amountLine, amountToken-1);
+    //Point_display(pontos, amountLine, amountToken-1);
+    printf("TEst");
+    /*Montar vetor com as distância*/
+    int size_arestas =0;    ///***********calcular ********//
+    for(int i=0; i<amountLine; i++) size_arestas += i;  
+    printf("TEst");
+    Aresta *arestas = Distance_calculate_arestas(pontos, amountLine,amountToken-1, size_arestas);
+    //Display_Vector_Arestas(arestas, size_arestas);
 
 
+    monta_arvore(amountToken-1,arestas);
 
-    Free_Vector(vector, amountLine, amountToken);
-    Free_Arestas(arestas, size_arestas);
+
+    Point_free(pontos, amountLine, amountToken-1);
+    Distance_free_arestas(arestas, size_arestas);
     fclose(arq);
 
 return 0;
