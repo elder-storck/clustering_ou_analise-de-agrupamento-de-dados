@@ -30,20 +30,19 @@ int main(int argc, char *argv[]){
     /*Vetor com pontos*/
     Ponto *pontos = Point_le_file(arq, amountLine, amountToken-1);
     //Point_display(pontos, amountLine, amountToken-1);
-    printf("TEst");
     /*Montar vetor com as distância*/
     int size_arestas =0;    ///***********calcular ********//
     for(int i=0; i<amountLine; i++) size_arestas += i;  
-    printf("TEst");
     Aresta *arestas = Distance_calculate_arestas(pontos, amountLine,amountToken-1, size_arestas);
     //Display_Vector_Arestas(arestas, size_arestas);
 
 
-    monta_arvore(amountToken-1,arestas);
+    monta_arvore(arestas, k, amountLine, size_arestas);
 
 
     Point_free(pontos, amountLine, amountToken-1);
     Distance_free_arestas(arestas, size_arestas);
+    
     fclose(arq);
 
 return 0;

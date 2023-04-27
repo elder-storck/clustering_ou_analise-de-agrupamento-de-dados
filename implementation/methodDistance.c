@@ -94,7 +94,7 @@ void Display_Vector_Arestas(Aresta *arestas, int size){
     }
 }
 
-void monta_arvore(int amountPontos, Aresta* arestas){
+void monta_arvore(Aresta* arestas,int k, int amountPontos, int amountArestas){
     //char *ID = NULL;
     //vetor com as alturas das arvores/
     //int sz[size];
@@ -102,14 +102,22 @@ void monta_arvore(int amountPontos, Aresta* arestas){
     //int id = UF_init(sz,size);
 
     
-
+    //printf("\n%d",amountPontos);
     Node *node = UF_init(amountPontos);
+    //UF_display(node, amountPontos);
+    //for(int i=0; i<amountPontos; i++){
+    //    printf("[%d]:%d",i,)
+    //}
 
     int size = 0;
-    for(int i = 1;i <= 20;i++){
+    for(int i = 1;i <= amountArestas - (k-1);i++){
+        //printf("%d  ",arestas[i].ID1);
+        //printf("%d\n", UF_find(node, 2));
+        
         if( UF_find(node, arestas[i].ID1) != UF_find(node, arestas[i].ID2)){
             UF_union(node, arestas[i].ID1, arestas[i].ID2);
         }
     }
-    
+    UF_display(node, amountPontos);
+    UF_free(node);
 }

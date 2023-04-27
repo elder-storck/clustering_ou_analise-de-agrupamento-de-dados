@@ -9,7 +9,7 @@ struct node{
 
 void UF_display(Node *nodes, int size){
     for(int i=0; i<size; i++){
-        printf("Pai: %d, Peso:%d\n",nodes[i].id, nodes[i].sz);
+        printf("\n[%d]Pai: %d, Peso:%d",i,nodes[i].id, nodes[i].sz);
     }
     return;
 }

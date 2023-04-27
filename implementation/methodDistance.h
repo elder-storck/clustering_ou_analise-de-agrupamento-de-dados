@@ -18,4 +18,4 @@ int comparar_Distancia(const void *x, const void *y);
 void Distance_free_arestas(Aresta *arestas, int size);
 void Display_Vector_Arestas(Aresta *arestas, int size);
 
-void monta_arvore(int amountPontos, Aresta* arestas);
+void monta_arvore(Aresta* arestas, int k, int amountPontos, int amountArestas);
