@@ -1,7 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-
+#include"UF.h"
+#include"Point.h"
 #include<string.h>
 
 

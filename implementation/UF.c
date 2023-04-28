@@ -7,6 +7,10 @@ struct node{
     int     sz;
 };
 
+int UF_returnID(Node *nodes,int index){
+    return nodes[index].id;
+}
+
 void UF_display(Node *nodes, int size){
     for(int i=0; i<size; i++){
         printf("\n[%d]Pai: %d, Peso:%d",i,nodes[i].id, nodes[i].sz);

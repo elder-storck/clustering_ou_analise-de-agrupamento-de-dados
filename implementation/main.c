@@ -34,18 +34,35 @@ int main(int argc, char *argv[]){
     int size_arestas =0;    ///***********calcular ********//
     for(int i=0; i<amountLine; i++) size_arestas += i;  
     Aresta *arestas = Distance_calculate_arestas(pontos, amountLine,amountToken-1, size_arestas);
-    //Display_Vector_Arestas(arestas, size_arestas);
+    //Display_Vector_Arestas(arestas, 10);
 
 
-    monta_arvore(arestas, k, amountLine, size_arestas);
+    Node* node = monta_arvore(arestas,pontos, k, amountLine, size_arestas);
+    //UF_display(node, amountLine);
 
 
     Point_free(pontos, amountLine, amountToken-1);
     Distance_free_arestas(arestas, size_arestas);
-    
+    free(node);
     fclose(arq);
 
 return 0;
 
+}
+void escreveFile(Ponto *pontos, Node *nodes, char *nameFile, int amountPontos, int k){
+    /*Abrir o arquivo*/
+    FILE *file;
+    file = fopen(nameFile, "w");
+
+    /*Testar Arquivo*/
+    if(file == NULL){
+        printf("\n ERRo 001: Função Open_File: Erro Ao abrir arquivo\n");
+        exit(0);
+    }
+
+    
+
+
+    fclose(file);
 }
 

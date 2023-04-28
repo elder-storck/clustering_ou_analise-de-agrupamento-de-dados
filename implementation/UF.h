@@ -4,6 +4,8 @@
 
 typedef struct node Node;
 
+int UF_returnID(Node *nodes,int index);
+
 void UF_display(Node *nodes, int size);
 
 
