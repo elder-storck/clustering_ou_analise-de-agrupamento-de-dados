@@ -3,6 +3,9 @@
         "outputfile.h": "c",
         "uf.h": "c",
         "methoddistance.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "methodfile.h": "c",
+        "point.h": "c",
+        "edgefile.h": "c"
     }
 }

@@ -2,64 +2,46 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
-#include"methodFile.h"
-#include"methodDistance.h"
-#include"UF.h"
-#include"Point.h"
+#include"../include/outFile.h"
+#include"../include/edgeFile.h"
+#include"../include/UF.h"
+#include"../include/Point.h"
+#include"../include/utility.h"
 
 
 
 int main(int argc, char *argv[]){
+
+    char* inputFile = argv[1];  //nome do arquivo Entrada
+    int k = atoi(argv[2]);      //Quantidade de Grupos
+    char* outputFile = argv[3]; //nome do arquivo de sáida
     
+    FILE *arq = utility_openFile(inputFile,"r");    //Abre o arquivo e testa
+
+    int amountPontos = utility_amountLine(arq);         //Conta quantidade de linhas do Arquivo
+    int amountCoords = (utility_amountToken(arq)) -1;   //Conta quantidade de colunas do Arquivo
+    rewind(arq);                                    //rebobina o ponteiro de leitura do arquivo
     
-    
-    
-    /*Arquivo Entrada*/
-    char* inputFile = argv[1];
-    /*Quantidade de Grupos*/
-    int k = atoi(argv[2]);
-    if(k <= 0){
-        printf("\n\nERRO 00: Número de grupos inválido\n\n");
-        exit(1);
-    } 
-    /*Arquivo saída*/
-    char* outputFile = argv[3];
-    
-
-
-
-    /*Abre o arquivo e testa*/
-    FILE *arq = Point_open_file(inputFile);
-
-    /*Conta quantidade de linhas do Arquivo*/
-    int amountLine  = Point_amount_line(arq);
-    /*Conta quantidade de colunas do Arquivo*/
-    int amountToken = Point_amount_token(arq);
-    rewind(arq);
-    
-    /*Vetor com pontos*/
-    Ponto *pontos = Point_le_file(arq, amountLine, amountToken-1);
-    //Point_display(pontos, amountLine, amountToken-1);
-    /*Montar vetor com as distância*/
-    int size_arestas =0;    ///***********calcular ********//
-    for(int i=0; i<amountLine; i++) size_arestas += i;  
-    Aresta *arestas = Distance_calculate_arestas(pontos, amountLine,amountToken-1, size_arestas);
-    //Display_Vector_Arestas(arestas, 10);
-
-
-    Node* node = monta_arvore(arestas,pontos, k, amountLine, size_arestas);
-    //UF_display(node, amountLine);
-
-    escreveFile(pontos,node,outputFile,amountLine, k);
-
-    //UF_free() liberar names
-    Point_free(pontos, amountLine, amountToken-1);
-    Distance_free_arestas(arestas, size_arestas);
-    
-    UF_free(node, amountLine);
+    Point *list_points = Point_readFile(arq, amountPontos, amountCoords); //le arquivo e preenche lista de pontos
     fclose(arq);
+    
+    int size_arestas =0;                                //quantidade de arestas da árvore
+    for(int i=0; i<amountPontos; i++) size_arestas += i;//contando quantidade de arestas da árvore
 
-return 0;
+    //calcula distância e monta lista de struct arestas
+    Edge *list_edge = Edge_initAndCaculate(list_points, amountPontos,amountCoords, size_arestas);
+    
+    // executa algoritimo de kruskal e monta lista de struct tree
+    Tree *list_tree = monta_arvore(list_edge,list_points, k, amountPontos, size_arestas);
+    Edge_free(list_edge);
+
+    //imprime os dados no arquivo
+    outFile_write(list_points,list_tree,outputFile,amountPontos, k);
+
+    //liberando estruturas
+    Point_free(list_points, amountPontos);
+    UF_free(list_tree, amountPontos);
+    return 0;
 
 }
 

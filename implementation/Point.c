@@ -1,142 +1,89 @@
-#include"Point.h"
+#include"../include/Point.h"
 
-struct ponto{
-    char  *name;
-    int      id;
-    float *coordenadas;
+
+struct point{
+    char  *name;        //identificador name do ponto
+    int      id;        //identificador numerico (usado somente dentro do programa)
+    float *coordinates; //coordenadas do ponto
 };
 
-char* Point_returna_name(Ponto *points, int index){
-    return points[index].name;
-}
-int Point_retorna_ID(Ponto *points, int index){
-    return points[index].id;
-}
-float Point_retorna_coordenada(Ponto *points, int index, int indexCoord){
-    return points[index].coordenadas[indexCoord];
+char* Point_returnName(Point *list_points, int index){
+    return list_points[index].name;
 }
 
+int Point_returnID(Point *list_points, int index){
+    return list_points[index].id;
+}
 
-
-FILE* Point_open_file(char *nameFile){
-    /*Abrir o arquivo*/
-    FILE *file;
-    file = fopen(nameFile, "r");
-
-    /*Testar Arquivo*/
-    if(file == NULL){
-        printf("\n ERRo 001: Função Open_File: Erro Ao abrir arquivo\n");
-        exit(0);
-    }
-    return file; 
+float Point_returnCoordinate(Point *list_points, int index, int indexCoord){
+    return list_points[index].coordinates[indexCoord];
 }
 
 
+Point* Point_readFile(FILE *file, int amountPoints, int amountCoordinates){
+    //lista de structs ponto
+    Point* list_points = malloc(amountPoints * sizeof(Point));
 
-int Point_amount_token(FILE *file){
-    char linha[500];
-    char *token;
-    
-    /*Lê a Primeira Linha*/
-    fgets(linha, 500,file);
-    
-    /*Contando quantidade de tokens em uma linha*/
-    int countColunas = 0;
-    token = strtok(linha,",");
-    while(token){
-        countColunas++;
-        token = strtok(NULL,",");
-    }
-
-    /*rebobina o ponteiro para o inicio do arquivo*/
-    rewind(file);
-
-    return countColunas;
-}
-
-
-
-int Point_amount_line(FILE *file){
-    int countLinha = 0;
-    char c;
-
-    /*enquanto não é fim do arquivo -> incrementa contador*/
-    for (c = getc(file); c != EOF; c = getc(file)){ 
-        if (c == '\n')  countLinha++;
-    }
-    
-    /*rebobina o ponteiro para o inicio do arquivo*/
-    rewind(file);
-    return countLinha;
-}
-
-
-Ponto* Point_le_file(FILE *file, int amountPontos, int amountCoordenas){
-
-    Ponto* pontos = malloc(amountPontos * sizeof(Ponto));
-
-
-    char *token;                            //recebe dados entre linhas
     char *line = malloc(1000*sizeof(char)); //recebe todos os dados de uma linha
-    size_t len =1000;                       
-    int countLine =0;
-    int countCoord =0;
+    char *token;        //recebe dados entre linhas
+    size_t len =1000;   //somente usado na função getline
+    int countLine =0;   //contador de linhas                    
+    int countCoord =0;  //contador de coordenadas
 
-
-
-    while((getline(&line, &len, file)) != -1){
-  
-        /* Primeira pesquisa por vírgula. */
+    while((getline(&line, &len, file)) != -1){  
+        // Primeira pesquisa por vírgula / lendo nome do ponto
         token = strtok(line, ",");
 
-        /*ALocando espaço referente a identificador do ponto*/
-        pontos[countLine].name = malloc((sizeof(char) * strlen(token)) +1); 
-        strcpy(pontos[countLine].name,token);
-
-        /*Alocando espaço para coordenadas do ponto*/
-        pontos[countLine].coordenadas = malloc(amountCoordenas * sizeof(float));
-        
-        pontos[countLine].id = countLine;
+        //ALocando espaço referente nome do ponto/
+        list_points[countLine].name = utility_alocName(token);
+        //Alocando espaço para coordenadas do ponto/
+        list_points[countLine].coordinates = malloc(amountCoordinates * sizeof(float));
+        //atribuindo valor ao ID do ponto
+        list_points[countLine].id = countLine;
 
         countCoord =0;
- 
-        /*Pesquisando por mais virgula*/
+        //Pesquisando por mais virgula / lendo coordenadas do ponto
         do{
-            token = strtok('\0', ","); //Demais pesquisas por vírgula.
-            if(token){                 //Se token diferente de NULL
+            //Demais pesquisas por vírgula.
+            token = strtok('\0', ","); 
+            //Se token diferente de NULL
+            if(token){                 
                 /*ALocando valores referentes a coordenadas*/
-                pontos[countLine].coordenadas[countCoord++] = atof(token);
-                //vector[countAux] = malloc((sizeof(char) * strlen(token)) +1);
-                //strcpy(vector[countAux],token);
+                list_points[countLine].coordinates[countCoord++] = atof(token);
             } 
-        } while(token); //enquanto token != NULL
-
+        } while(token);//enquanto token diferente de NULL
     countLine++;
     }
+
     free(line);
-return pontos;
+    return list_points;
 }
 
 
-void Point_display(Ponto *pontos, int amountPontos, int amountCoordenas){
-    for(int i=0; i<amountPontos; i++){        
-        printf("\nname: %s, Id:%d ", pontos[i].name, pontos[i].id);
-        for(int j=0; j<amountCoordenas; j++){
-            printf(",%.2f ", pontos[i].coordenadas[j]);
+void Point_display(Point *list_points, int amountPoints, int amountCoordinates){
+    //andando pela lista de pontos
+    for(int i=0; i<amountPoints; i++){        
+        printf("\nname: %s, Id:%d ", list_points[i].name, list_points[i].id);
+        
+        //andando pela lista de coordenadas
+        for(int j=0; j<amountCoordinates; j++){
+            printf(",%.2f ", list_points[i].coordinates[j]);
         }
     }
+
     printf("\n");
     return;
 }
 
 
-void Point_free(Ponto *pontos, int amountPontos, int amountCoordenas){
+void Point_free(Point *list_points, int amountPoints){
     
-    for(int i=0; i<amountPontos; i++){
-        free(pontos[i].coordenadas);
-        free(pontos[i].name);
+    for(int i=0; i<amountPoints; i++){
+        free(list_points[i].coordinates);   //liberando vetor coordenadas
+        free(list_points[i].name);          //liberando nome
     }
-    free(pontos);        
+
+    free(list_points);        
     return;
 }
 
