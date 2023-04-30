@@ -27,7 +27,7 @@ int comparar_Distancia(const void *x, const void *y){
         return -1;
     }
     return 0;
-} 
+}
 
 
 
@@ -96,12 +96,13 @@ void Display_Vector_Arestas(Aresta *arestas, int size){
 
 Node* monta_arvore(Aresta* arestas, Ponto *pontos, int k, int amountPontos, int amountArestas){
     /*Iniciando vetor arvore*/
-    Node *node = UF_init(amountPontos, pontos);
+    Node *node = UF_init(amountPontos);
     
     /*variável auxiliar para contar quantidade de arestas unidas*/
     int count =0;
+    
     /*passando no vetor arestas*/
-    for(int i = 0;(i <= amountArestas) && count < ((amountPontos) -(k)) ;i++){
+    for(int i = 0;(i <= amountArestas) && count < (amountPontos-(k)) ;i++){
         /*verificando se duas arestas estão conexas*/
         if( UF_find(node, arestas[i].ID1) != UF_find(node, arestas[i].ID2)){
             /*unindo duas arestas*/
@@ -110,12 +111,11 @@ Node* monta_arvore(Aresta* arestas, Ponto *pontos, int k, int amountPontos, int 
         }
     }
 
-    UF_ordenaPorPai(node,amountPontos);
+
     //for(int i=0;i<amountPontos; i++){
-        //if(i == UF_returnID(node,i))  printf("[%d]Pai: %d\n",i,UF_returnID(node,i));
-        //if(UF_returnID(node, i) == 19){
-        //    printf("%s\n",Point_returna_name(pontos, i));
-        //}
+    //    if(UF_returnID(node, i) == 19){
+    //        printf("%s\n",Point_returna_name(pontos, i));
+    //    }
     //}
     //UF_display(node, amountPontos);
     return node;

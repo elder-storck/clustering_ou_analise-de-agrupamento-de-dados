@@ -9,25 +9,15 @@
 
 
 
+
 int main(int argc, char *argv[]){
-    
-    
-    
-    
     /*Arquivo Entrada*/
     char* inputFile = argv[1];
     /*Quantidade de Grupos*/
     int k = atoi(argv[2]);
-    if(k <= 0){
-        printf("\n\nERRO 00: Número de grupos inválido\n\n");
-        exit(1);
-    } 
     /*Arquivo saída*/
     char* outputFile = argv[3];
     
-
-
-
     /*Abre o arquivo e testa*/
     FILE *arq = Point_open_file(inputFile);
 
@@ -50,18 +40,29 @@ int main(int argc, char *argv[]){
     Node* node = monta_arvore(arestas,pontos, k, amountLine, size_arestas);
     //UF_display(node, amountLine);
 
-    escreveFile(pontos,node,outputFile,amountLine, k);
 
-    //UF_free() liberar names
     Point_free(pontos, amountLine, amountToken-1);
     Distance_free_arestas(arestas, size_arestas);
-    
-    UF_free(node, amountLine);
+    free(node);
     fclose(arq);
 
 return 0;
 
 }
+void escreveFile(Ponto *pontos, Node *nodes, char *nameFile, int amountPontos, int k){
+    /*Abrir o arquivo*/
+    FILE *file;
+    file = fopen(nameFile, "w");
+
+    /*Testar Arquivo*/
+    if(file == NULL){
+        printf("\n ERRo 001: Função Open_File: Erro Ao abrir arquivo\n");
+        exit(0);
+    }
+
+    
 
 
+    fclose(file);
+}
 
