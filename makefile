@@ -1,8 +1,8 @@
 PROJ_NAME = trab1
 CC_FLAGS=-c -w -Wall -g -lm
 
-$(PROJ_NAME): obj/main.o obj/methodFile.o obj/methodDistance.o obj/UF.o obj/Point.o obj/utility.o
-	gcc -o $(PROJ_NAME) obj/main.o obj/methodFile.o obj/methodDistance.o obj/UF.o obj/Point.o obj/utility.o -lm
+$(PROJ_NAME): obj/main.o obj/methodFile.o obj/methodDistance.o obj/UF.o obj/Point.o
+	gcc -o $(PROJ_NAME) obj/main.o obj/methodFile.o obj/methodDistance.o obj/UF.o obj/Point.o -lm
 
 obj/main.o: implementation/main.c
 	gcc -o obj/main.o implementation/main.c $(CC_FLAGS)
@@ -18,10 +18,6 @@ obj/Point.o: implementation/Point.c
 
 obj/UF.o: implementation/UF.c
 	gcc -o obj/UF.o implementation/UF.c $(CC_FLAGS)
-
-
-obj/utility.o: implementation/utility.c
-	gcc -o obj/utility.o implementation/utility.c $(CC_FLAGS)
 
 
 
