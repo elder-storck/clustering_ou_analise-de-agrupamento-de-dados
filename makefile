@@ -19,13 +19,16 @@ obj/Point.o: implementation/Point.c
 obj/UF.o: implementation/UF.c
 	gcc -o obj/UF.o implementation/UF.c $(CC_FLAGS)
 
+
+
+
 clean:
 	rm -rf obj/*.o
 	rm -rf $(PROJ_NAME)
-	rm -rf $(PROJ_NAME_DESCOMP)
 
 rmpromper: clean
 	rm -rf $(PROJ_NAME)
 
 run:
-	valgrind ./$(PROJ_NAME) ./in-exemplos/1.txt 3 saida
+	valgrind ./$(PROJ_NAME) ./in-exemplos/1.txt 2 saida.txt
+	

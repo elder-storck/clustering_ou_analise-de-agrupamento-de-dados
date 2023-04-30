@@ -27,7 +27,7 @@ int comparar_Distancia(const void *x, const void *y){
         return -1;
     }
     return 0;
-}
+} 
 
 
 
@@ -89,35 +89,34 @@ void Distance_free_arestas(Aresta *arestas, int size){
 
 void Display_Vector_Arestas(Aresta *arestas, int size){
     for(int i=0; i<size; i++){
-        printf("%f\n",arestas[i].distance);
-        //printf("%s %s %f\n",arestas[i].ID1, arestas[i].ID2, arestas[i].distance);
+        //printf("%f\n",arestas[i].distance);
+        printf("%d %d %f\n",arestas[i].ID1, arestas[i].ID2, arestas[i].distance);
     }
 }
 
-void monta_arvore(Aresta* arestas,int k, int amountPontos, int amountArestas){
-    //char *ID = NULL;
-    //vetor com as alturas das arvores/
-    //int sz[size];
-    //vetor indicador de arvore, iniciar cada no sendo unico pai/
-    //int id = UF_init(sz,size);
-
+Node* monta_arvore(Aresta* arestas, Ponto *pontos, int k, int amountPontos, int amountArestas){
+    /*Iniciando vetor arvore*/
+    Node *node = UF_init(amountPontos, pontos);
     
-    //printf("\n%d",amountPontos);
-    Node *node = UF_init(amountPontos);
-    //UF_display(node, amountPontos);
-    //for(int i=0; i<amountPontos; i++){
-    //    printf("[%d]:%d",i,)
-    //}
-
-    int size = 0;
-    for(int i = 1;i <= amountArestas - (k-1);i++){
-        //printf("%d  ",arestas[i].ID1);
-        //printf("%d\n", UF_find(node, 2));
-        
+    /*variável auxiliar para contar quantidade de arestas unidas*/
+    int count =0;
+    /*passando no vetor arestas*/
+    for(int i = 0;(i <= amountArestas) && count < ((amountPontos) -(k)) ;i++){
+        /*verificando se duas arestas estão conexas*/
         if( UF_find(node, arestas[i].ID1) != UF_find(node, arestas[i].ID2)){
+            /*unindo duas arestas*/
             UF_union(node, arestas[i].ID1, arestas[i].ID2);
+            count++;
         }
     }
-    UF_display(node, amountPontos);
-    UF_free(node);
+
+    UF_ordenaPorPai(node,amountPontos);
+    //for(int i=0;i<amountPontos; i++){
+        //if(i == UF_returnID(node,i))  printf("[%d]Pai: %d\n",i,UF_returnID(node,i));
+        //if(UF_returnID(node, i) == 19){
+        //    printf("%s\n",Point_returna_name(pontos, i));
+        //}
+    //}
+    //UF_display(node, amountPontos);
+    return node;
 }

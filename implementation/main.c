@@ -9,15 +9,25 @@
 
 
 
-
 int main(int argc, char *argv[]){
+    
+    
+    
+    
     /*Arquivo Entrada*/
     char* inputFile = argv[1];
     /*Quantidade de Grupos*/
     int k = atoi(argv[2]);
+    if(k <= 0){
+        printf("\n\nERRO 00: Número de grupos inválido\n\n");
+        exit(1);
+    } 
     /*Arquivo saída*/
     char* outputFile = argv[3];
     
+
+
+
     /*Abre o arquivo e testa*/
     FILE *arq = Point_open_file(inputFile);
 
@@ -34,18 +44,24 @@ int main(int argc, char *argv[]){
     int size_arestas =0;    ///***********calcular ********//
     for(int i=0; i<amountLine; i++) size_arestas += i;  
     Aresta *arestas = Distance_calculate_arestas(pontos, amountLine,amountToken-1, size_arestas);
-    //Display_Vector_Arestas(arestas, size_arestas);
+    //Display_Vector_Arestas(arestas, 10);
 
 
-    monta_arvore(arestas, k, amountLine, size_arestas);
+    Node* node = monta_arvore(arestas,pontos, k, amountLine, size_arestas);
+    //UF_display(node, amountLine);
 
+    escreveFile(pontos,node,outputFile,amountLine, k);
 
+    //UF_free() liberar names
     Point_free(pontos, amountLine, amountToken-1);
     Distance_free_arestas(arestas, size_arestas);
     
+    UF_free(node, amountLine);
     fclose(arq);
 
 return 0;
 
 }
+
+
 

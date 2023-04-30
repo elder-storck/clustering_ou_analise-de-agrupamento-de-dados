@@ -5,6 +5,7 @@
 
 typedef struct ponto Ponto;
 
+char* Point_returna_name(Ponto *points, int index);
 int Point_retorna_ID(Ponto *points, int index);
 float Point_retorna_coordenada(Ponto *points, int index, int indexCoord);
 

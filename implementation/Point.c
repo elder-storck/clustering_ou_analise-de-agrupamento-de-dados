@@ -6,6 +6,9 @@ struct ponto{
     float *coordenadas;
 };
 
+char* Point_returna_name(Ponto *points, int index){
+    return points[index].name;
+}
 int Point_retorna_ID(Ponto *points, int index){
     return points[index].id;
 }

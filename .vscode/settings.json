@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "outputfile.h": "c",
+        "uf.h": "c",
+        "methoddistance.h": "c",
+        "stdio.h": "c"
+    }
+}
